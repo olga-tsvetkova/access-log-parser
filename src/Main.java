@@ -1,31 +1,37 @@
+import java.io.File;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.println("Введите первое число:");
-        int numberOne = new Scanner (System.in).nextInt();
+     Scanner in_scan = new Scanner(System.in);
+     String path;
+     File file;
+     boolean fileExists;
+     boolean directoryExists;
+     int cnt = 0;
 
-        System.out.println("Введите второе число:");
-        int numberTwo = new Scanner (System.in).nextInt();
-        int resultInt;
-        //сумма
-        resultInt = numberOne + numberTwo;
-        System.out.println("Сумма чисел : " + resultInt);
-        //разность
-        resultInt = numberOne - numberTwo;
-        System.out.println("Разность чисел :" + resultInt);
-
-        //умножение
-        resultInt = numberOne * numberTwo;
-        System.out.println("Произведение чисел :" + resultInt);
-
-        //деление
-        double resultDouble;
-        resultDouble = (double) numberOne / numberTwo;
-        System.out.println("Частное чисел :" + resultDouble);
+     while (true) {
+         // получить имя файла
+         System.out.println("------------------------------------------");
+         System.out.println("Введите путь к файлу: ");
+         path = in_scan.nextLine();
+         // создать объект File
+         file = new File(path);
+         fileExists = file.exists();
+         directoryExists = file.isDirectory();
+         if (directoryExists) {
+             System.out.println("Это директория: " + path);
+             continue;
+         } else if (!fileExists) {
+             System.out.println("Файл не существует: "+path);
+             continue;
+         } else {
+             ++cnt;
+             System.out.println("Путь указан верно: "+path);
+             System.out.println("Это файл номер "+cnt);
+         }
+     }
     }
 }
