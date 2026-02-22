@@ -1,5 +1,7 @@
+package ru.courses.geometry;
+
 public class MyPolyLineClose extends MyPolyLine {
-    public MyPolyLineClose( MyPoint[] pl){
+    public MyPolyLineClose(MyPoint[] pl){
         super(pl);
     }
 

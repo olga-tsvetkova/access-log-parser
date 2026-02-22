@@ -1,3 +1,5 @@
+import ru.courses.number.Fraction;
+
 //import people.*;
 public class Main {
  public static void main(String[] args) {

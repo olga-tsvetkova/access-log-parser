@@ -1,3 +1,5 @@
+package ru.courses.geometry;
+
 public class MyPoint {
     private double x;
     private double y;

@@ -1,3 +1,5 @@
+package ru.courses.geometry;
+
 public class MyPolyLine implements Measurable {
 
    private MyPoint[] pointList;

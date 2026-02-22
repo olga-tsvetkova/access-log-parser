@@ -1,3 +1,5 @@
+package ru.courses.geometry;
+
 public class MyLine implements Measurable
 {
     MyPoint start;
@@ -8,7 +10,7 @@ public class MyLine implements Measurable
         end =    new MyPoint(endPoint.getX(),endPoint.getY());;
     }
 
-    public MyLine(int startX,  int startY, int endX, int endY) {
+    public MyLine(int startX, int startY, int endX, int endY) {
         this.start = new MyPoint(startX, startY);
         this.end   = new MyPoint(endX, endY);
     }
