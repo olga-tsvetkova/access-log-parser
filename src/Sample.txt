@@ -1,0 +1,54 @@
+1. Создайте интерфейс Measurable с методом getLength(), который возвращает длину объекта.
+  2.  Создайте классы MyPoint, MyLine, MyPolyLine и MyPolyLineClose, которые реализуют этот интерфейс.
+  3.  В классе Main создайте метод calcLength, который принимает массив объектов типа Object и выводит длину каждого объекта, если он реализует интерфейс Measurable.
+  4.  В методе main создайте объекты всех четырех классов и передайте их в метод calcLength.public class Main {public class Main {
+
+      private static void calcLength(Object[] objList) {
+        for (int i = 0; i < objList.length; i++) {
+            if (objList[i] instanceof Measurable) {
+                try {
+                    System.out.println("Длина объекта ( " + (Object) objList[i].getClass().getName() + " ):" + ((Measurable) objList[i]).getLength());
+                } catch (Exception e) {
+                    System.out.println("Ошибка при вычислении длины объекта: " + e.getMessage());
+                }
+            } else {
+                System.out.println("Интерфейс нереализован");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        MyPoint[] pointList = {new MyPoint(1, 5),
+                new MyPoint(2, 8),
+                new MyPoint(5, 3),
+                new MyPoint(8, 9)};
+
+        MyLine line = new MyLine(pointList[0], pointList[2]);
+        MyPolyLine polyLine = new MyPolyLine(pointList);
+        MyPolyLineClose plc = new MyPolyLineClose(pointList);
+
+        calcLength(new Object[] {line, polyLine, plc}); // передаем массив объектов для расчета длины
+
+    }
+}
+------Пример 6 Полиморфизм Сложение
+public static void main(String[] args) {
+     Fraction f1 = new Fraction(3,5);
+     Number[] numList1 = {2,   f1, 2.3f};
+
+     Fraction f2 = new Fraction(49,12);
+     Fraction f3 = new Fraction(3,2);
+     Number[] numList2 = {3.6f,f2, 3, f3};
+
+     Fraction f4 = new Fraction(1,3);
+     Number[] numList3 = {f4,  1};
+
+     System.out.print("Sum numList1 = ");
+     System.out.println(Fraction.sumAll(numList1));
+
+     System.out.print("Sum numList2 = ");
+     System.out.println(Fraction.sumAll(numList2));
+
+     System.out.print("Sum numList3 = ");
+     System.out.println(Fraction.sumAll(numList3));
+ }
