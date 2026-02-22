@@ -1,37 +1,23 @@
-import java.io.File;
-import java.util.Scanner;
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+//import people.*;
 public class Main {
-    public static void main(String[] args) {
-     Scanner in_scan = new Scanner(System.in);
-     String path;
-     File file;
-     boolean fileExists;
-     boolean directoryExists;
-     int cnt = 0;
+ public static void main(String[] args) {
+     Fraction f1 = new Fraction(3,5);
+     Number[] numList1 = {2,   f1, 2.3f};
 
-     while (true) {
-         // получить имя файла
-         System.out.println("------------------------------------------");
-         System.out.println("Введите путь к файлу: ");
-         path = in_scan.nextLine();
-         // создать объект File
-         file = new File(path);
-         fileExists = file.exists();
-         directoryExists = file.isDirectory();
-         if (directoryExists) {
-             System.out.println("Это директория: " + path);
-             continue;
-         } else if (!fileExists) {
-             System.out.println("Файл не существует: "+path);
-             continue;
-         } else {
-             ++cnt;
-             System.out.println("Путь указан верно: "+path);
-             System.out.println("Это файл номер "+cnt);
-         }
-     }
-    }
+     Fraction f2 = new Fraction(49,12);
+     Fraction f3 = new Fraction(3,2);
+     Number[] numList2 = {3.6f,f2, 3, f3};
+
+     Fraction f4 = new Fraction(1,3);
+     Number[] numList3 = {f4,  1};
+
+     System.out.print("Sum numList1 = ");
+     System.out.println(Fraction.sumAll(numList1));
+
+     System.out.print("Sum numList2 = ");
+     System.out.println(Fraction.sumAll(numList2));
+
+     System.out.print("Sum numList3 = ");
+     System.out.println(Fraction.sumAll(numList3));
+ }
 }
