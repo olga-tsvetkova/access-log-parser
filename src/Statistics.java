@@ -11,7 +11,8 @@ public class Statistics {
     private long totalTraffic;
     private LocalDateTime minTime;
     private LocalDateTime maxTime;
-    private HashSet<String> listUrl = HashSet.newHashSet(10);;
+    private HashSet<String> listUrl    = HashSet.newHashSet(10);;
+    private HashSet<String> listBadUrl = HashSet.newHashSet(10);;
     private HashMap<String, Integer> osMap = new HashMap<>();
     private HashMap<String, Integer> brMap = new HashMap<>();;
 
@@ -38,6 +39,7 @@ public class Statistics {
         }
 
         if (entry.getStatusCode()==200) listUrl.add(entry.getPath());
+        if (entry.getStatusCode()==404) listBadUrl.add(entry.getPath());
         String os= entry.getUaTag().getOsName();        // Получаем имя операционной системы из тега User-Agent
         String br = entry.getUaTag().getBrowserName();  // Получаем имя браузера из тега User-Agent
         if (osMap.containsKey(os)) osMap.put(os, osMap.getOrDefault(os, 0) + 1);
@@ -48,6 +50,10 @@ public class Statistics {
 
     public List<String> getUrlList() {
         return new ArrayList<>(listUrl);
+    }
+
+    public List<String> getBadUrlList() {
+        return new ArrayList<>(listBadUrl);
     }
 
     public HashMap<String, Double> getOsStatistics() {

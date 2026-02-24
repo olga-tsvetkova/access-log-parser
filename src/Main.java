@@ -23,7 +23,7 @@ public class Main {
             System.out.println("------------------------------------------");
             System.out.println("Введите путь к файлу: ");
             path = in_scan.nextLine();
-            path = "c:\\test\\access.log";
+            // path = "c:\\test\\access.log";
 
             // создать объект File
             file = new File(path);
@@ -57,7 +57,9 @@ public class Main {
                                              }
                 System.out.println("Средний трафик за час: " + statistics.getTrafficRate());
                 System.out.println("-------------------------------------------------------");
-                List<String> urlList = statistics.getUrlList();
+                System.out.println("Список несуществующих Url в логе: ");
+                System.out.println("-------------------------------------------------------");
+                List<String> urlList = statistics.getBadUrlList();
                 for (int i = 0; i < urlList.size(); i++) System.out.println("URL " + (i+1) + ": " + urlList.get(i));
                 System.out.println("-------------------------------------------------------");
                 HashMap<String, Double> res = statistics.getOsStatistics();
