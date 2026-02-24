@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-enum HttpMethod {GET,POST,PUT,DELETE,HEAD,OPTIONS,TRACE,CONNECT,PATCH};
+enum HttpMethod {GET,POST,PUT,DELETE,HEAD,OPTIONS,TRACE,CONNECT,PATCH,NONE};
 public class LogEntry {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss xx")
@@ -43,18 +43,33 @@ public class LogEntry {
 
     public LogEntry(String str) {
         // Разбор строки str и установка значений полей
+            HttpMethod methodTmp = HttpMethod.NONE;
             String[] parts = parse(str);
-            // for (int i = 0; i < parts.length; i++) System.out.println("item "+ i + " : " + parts[i]);
+            String   pathInfo = parts[5];
+            String[] pathSplit;
+            String   methodStr = null;
+            String   pathStr   = null;
+            if (pathInfo != null && pathInfo !="-" ) {
+                pathSplit = pathInfo.split(" ");
+                if (pathSplit.length>1) {
+                    methodStr = pathSplit[0];
+                    pathStr   = pathSplit[1];
+                }
+            }
             this.ipAddr = parts[0]+"."+parts[1]+"."+ parts[2]+"."+ parts[3];
             this.dateAndTime = parts[4];
-            this.method = null;   //HttpMethod.valueOf(secondPart[0]);
-            this.path = null;     //secondPart[1];
-            if (parts[6] != null )  this.statusCode =  Integer.parseInt(parts[6]);
+            if (methodStr != null)
+              try { methodTmp = HttpMethod.valueOf(methodStr); }
+              catch (IllegalArgumentException e)  {methodTmp = HttpMethod.NONE;}
+            this.method = methodTmp;
+            this.path = pathStr;
+            if (parts[6] != null && parts[6] !="-" )  this.statusCode =  Integer.parseInt(parts[6]);
             else this.statusCode = 0;
-            if (parts[7] != null )  this.dataSize = Long.parseLong(parts[7]);
+            if (parts[7] != null && parts[7] !="-" )  this.dataSize = Long.parseLong(parts[7]);
             else this.dataSize = 0;
-            this.referer = null;  //parts[3].split(" ")[0];
-            if (parts[9] != null )  this.userAgent = parts[9];
+            if (parts[8] != null && parts[8] !="-" ) this.referer = parts[8];
+            else  this.referer = null;
+            if (parts[9] != null && parts[8] !="-" )  this.userAgent = parts[9];
             else this.userAgent = "-";
             this.uaTag = new UserAgent(this.userAgent);
     }
