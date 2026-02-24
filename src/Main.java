@@ -23,7 +23,6 @@ public class Main {
             System.out.println("------------------------------------------");
             System.out.println("Введите путь к файлу: ");
             path = in_scan.nextLine();
-            path = "c:\\test\\access.log";
 
             // создать объект File
             file = new File(path);
