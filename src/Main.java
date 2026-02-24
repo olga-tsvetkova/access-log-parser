@@ -1,4 +1,7 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 
@@ -20,6 +23,8 @@ public class Main {
             System.out.println("------------------------------------------");
             System.out.println("Введите путь к файлу: ");
             path = in_scan.nextLine();
+            path = "c:\\test\\access.log";
+
             // создать объект File
             file = new File(path);
             fileExists = file.exists();
@@ -51,6 +56,17 @@ public class Main {
                                                 throw new RuntimeException(e);
                                              }
                 System.out.println("Средний трафик за час: " + statistics.getTrafficRate());
+                System.out.println("-------------------------------------------------------");
+                List<String> urlList = statistics.getUrlList();
+                for (int i = 0; i < urlList.size(); i++) System.out.println("URL " + (i+1) + ": " + urlList.get(i));
+                System.out.println("-------------------------------------------------------");
+                HashMap<String, Double> res = statistics.getOsStatistics();
+                for (Map.Entry<String, Double> entry : res.entrySet()) System.out.println("ОС     : " + entry.getKey() + ", доля: " + entry.getValue());
+                System.out.println("-------------------------------------------------------");
+                res = statistics.getBrouserStatistics();
+                for (Map.Entry<String, Double> entry : res.entrySet()) System.out.println("Браузер: " + entry.getKey() + ", доля: " + entry.getValue());
+                System.out.println("-------------------------------------------------------");
+
             }
         }
     }

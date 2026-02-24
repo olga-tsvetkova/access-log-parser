@@ -1,10 +1,19 @@
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static java.time.Duration.between;
 
 public class Statistics {
     private long totalTraffic;
     private LocalDateTime minTime;
     private LocalDateTime maxTime;
+    private HashSet<String> listUrl = HashSet.newHashSet(10);;
+    private HashMap<String, Integer> osMap = new HashMap<>();
+    private HashMap<String, Integer> brMap = new HashMap<>();;
 
     public Statistics() {
         clear();
@@ -14,6 +23,9 @@ public class Statistics {
         this.totalTraffic = 0;
         this.minTime = null;
         this.maxTime = null;
+        this.listUrl.clear(); //
+        this.osMap.clear();
+        this.brMap.clear();
     }
 
     public void addEntry(LogEntry entry) {
@@ -24,6 +36,34 @@ public class Statistics {
         if (this.maxTime == null || entry.getDateAndTime().isAfter(this.maxTime)) {
             this.maxTime = entry.getDateAndTime();
         }
+
+        if (entry.getStatusCode()==200) listUrl.add(entry.getPath());
+        String os= entry.getUaTag().getOsName();        // Получаем имя операционной системы из тега User-Agent
+        String br = entry.getUaTag().getBrowserName();  // Получаем имя браузера из тега User-Agent
+        if (osMap.containsKey(os)) osMap.put(os, osMap.getOrDefault(os, 0) + 1);
+        else osMap.put(os, 1);
+        if (brMap.containsKey(br)) brMap.put(br, brMap.getOrDefault(br, 0) + 1);
+        else brMap.put(br, 1);
+    }
+
+    public List<String> getUrlList() {
+        return new ArrayList<>(listUrl);
+    }
+
+    public HashMap<String, Double> getOsStatistics() {
+        HashMap<String, Double> res = new  HashMap<>();
+        AtomicInteger allCount = new AtomicInteger();
+        osMap.forEach((s, cnt) -> allCount.addAndGet(cnt));
+        osMap.forEach((s, cnt) -> res.put(s, (double) cnt / allCount.get() * 100));
+        return res;
+    }
+
+    public HashMap<String, Double> getBrouserStatistics() {
+        HashMap<String, Double> res = new  HashMap<>();
+        AtomicInteger allCount = new AtomicInteger();
+        brMap.forEach((s, cnt) -> allCount.addAndGet(cnt));
+        brMap.forEach((s, cnt) -> res.put(s, (double) cnt / allCount.get() * 100));
+        return res;
     }
 
     public long getTrafficRate()  {
