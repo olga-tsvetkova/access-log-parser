@@ -1,8 +1,6 @@
+import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.time.Duration.between;
@@ -14,10 +12,17 @@ public class Statistics {
     private LocalDateTime minTime;
     private LocalDateTime maxTime;
     private HashSet<String> listUrl    = HashSet.newHashSet(10);
+    private HashSet<String> listOutUrl    = HashSet.newHashSet(10);
     private HashSet<String> listUrlUser= HashSet.newHashSet(10);
     private HashSet<String> listBadUrl = HashSet.newHashSet(10);
     private HashMap<String, Integer> osMap = new HashMap<>();
-    private HashMap<String, Integer> brMap = new HashMap<>();;
+    private HashMap<String, Integer> brMap = new HashMap<>();
+    private HashMap<Integer, Integer> secMap= new HashMap<>();
+    private HashMap<String, Integer>  usrMap= new HashMap<>();
+
+    public static Integer getSec(LocalDateTime dt) {// получить секунды из локального времени (в рамках одного дня)
+        return dt.getSecond() + 60 * dt.getMinute() + 3600 * dt.getHour();
+    }
 
     public Statistics() {
         clear();
@@ -33,6 +38,9 @@ public class Statistics {
         this.listUrlUser.clear();
         this.osMap.clear();
         this.brMap.clear();
+        this.secMap.clear();
+        this.listOutUrl.clear();
+        this.usrMap.clear();
     }
 
     public void addEntry(LogEntry entry) {
@@ -46,8 +54,30 @@ public class Statistics {
         // статистика посещений пользователями
         if (!entry.getUaTag().getBot()) {
             this.totalCall++;
-            if (!listUrlUser.contains(entry.getIpAddr())) listUrlUser.add(entry.getIpAddr());
+            if (!entry.getReferer().equals("-"))  // если есть реферер - добавляем его хост в список внешних ссылок
+               try {
+                    URL url = new URL (entry.getReferer());
+                    listOutUrl.add(url.getHost());
+                   }
+                catch (Exception e ) {
+                    //  пропускаем ошибку
+                    //  System.out.println("ошибка при обработке строки " + entry.getReferer() + " " + e.getMessage());
+               }
+            String addr = entry.getIpAddr();
+            if (!listUrlUser.contains(addr)) listUrlUser.add(addr);
+
+            if (usrMap.containsKey(addr))
+                usrMap.put(addr, usrMap.getOrDefault(addr, 0) + 1);
+            else usrMap.put(addr, 1);
+
+            // статистика обращений по секундам
+            // считаем, что время добавления строк в журнал НЕ уменьшается
+            Integer sec = getSec(entry.getDateAndTime());
+            if (secMap.containsKey(sec))
+                secMap.put(sec, secMap.getOrDefault(sec, 0) + 1);
+            else secMap.put(sec, 1);
         }
+
 
         // статистика ошибочных обращений по коду ответа  4хх и 5хх
         if (entry.getStatusCode()/100 ==4 || entry.getStatusCode()/100 ==5) this.totalBadCall ++;
@@ -64,6 +94,12 @@ public class Statistics {
     public List<String> getUrlList() {
         return new ArrayList<>(listUrl);
     }
+
+    // Метод, возвращающий список сайтов, со страниц которых есть ссылки на текущий сайт.
+    public void getOutUrlList() {
+        listOutUrl.forEach(x->System.out.println(x));
+    }
+
 
     public List<String> getBadUrlList() {
         return new ArrayList<>(listBadUrl);
@@ -121,7 +157,26 @@ public class Statistics {
         return 0;
     }
 
+    // Метод расчёта пиковой нагрузки на сайт в секунду
+    public Integer getPeakCall() {
+        if (secMap.isEmpty())  return 0;
 
+        Optional<Map.Entry<Integer, Integer>> maxEntry = secMap.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue());
+        return maxEntry.get().getValue();
+    }
+
+    // Метод расчёта максимальной посещаемости одним пользователем.
+    public Integer getMaxUserCall() {
+        // Если нет записей в usrMap, то возвращаем 0. Это предотвращает ошибку при вызове maxEntry.get().getValue(); когда usrMap пустой.
+        if (usrMap.isEmpty())  return 0;
+
+        Optional<Map.Entry<String, Integer>> maxEntry = usrMap.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue());
+        return maxEntry.get().getValue();
+    }
 }
 
 /*

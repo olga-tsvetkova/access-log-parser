@@ -65,6 +65,16 @@ public class Main {
                 System.out.println("Средняя посещаемость одним пользователем : " + statistics.getRatePerUser());
                 System.out.println("-------------------------------------------------------");
 
+                System.out.println("Пиковая посещаемость сайта               :" + statistics.getPeakCall());
+                System.out.println("-------------------------------------------------------");
+
+                System.out.println("Список внешних сайтов: ");
+                statistics.getOutUrlList();
+                System.out.println("-------------------------------------------------------");
+
+                System.out.println("Максимальная посещаемость одним пользователем :" + statistics.getMaxUserCall());
+                System.out.println("-------------------------------------------------------");
+
 /*
                 System.out.println("Средний трафик за час: " + statistics.getTrafficRate());
                 System.out.println("-------------------------------------------------------");
