@@ -23,7 +23,7 @@ public class Main {
             System.out.println("------------------------------------------");
             System.out.println("Введите путь к файлу: ");
             path = in_scan.nextLine();
-            // path = "c:\\test\\access.log";
+            path = "c:\\test\\access.log";
 
             // создать объект File
             file = new File(path);
@@ -55,6 +55,17 @@ public class Main {
                                                 System.out.println("Ошибка чтения файла: " + path);
                                                 throw new RuntimeException(e);
                                              }
+
+                System.out.println("Количество посещений за час              : " + statistics.getUserRate());
+                System.out.println("-------------------------------------------------------");
+
+                System.out.println("Количество ошибочных запросов в час      : " + statistics.getBadRequestRate());
+                System.out.println("-------------------------------------------------------");
+
+                System.out.println("Средняя посещаемость одним пользователем : " + statistics.getRatePerUser());
+                System.out.println("-------------------------------------------------------");
+
+/*
                 System.out.println("Средний трафик за час: " + statistics.getTrafficRate());
                 System.out.println("-------------------------------------------------------");
                 System.out.println("Список несуществующих Url в логе: ");
@@ -68,7 +79,7 @@ public class Main {
                 res = statistics.getBrouserStatistics();
                 for (Map.Entry<String, Double> entry : res.entrySet()) System.out.println("Браузер: " + entry.getKey() + ", доля: " + entry.getValue());
                 System.out.println("-------------------------------------------------------");
-
+*/
             }
         }
     }

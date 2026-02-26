@@ -1,6 +1,7 @@
 public class UserAgent {
     private final String osName;
     private final String browserName;
+    private final Boolean isBot;
 
     public UserAgent(String userAgent) {
         if (userAgent.contains("Windows")) {
@@ -24,7 +25,10 @@ public class UserAgent {
         } else {
             this.browserName = "Unknown browser";
         }
+        isBot = userAgent.contains("bot");  // проверка на наличие ключевого слова "bot"
     }
+
+    public Boolean getBot() { return isBot;}
 
     public String getOsName() {
         return osName;

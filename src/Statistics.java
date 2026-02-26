@@ -9,10 +9,13 @@ import static java.time.Duration.between;
 
 public class Statistics {
     private long totalTraffic;
+    private long totalCall;
+    private long totalBadCall;
     private LocalDateTime minTime;
     private LocalDateTime maxTime;
-    private HashSet<String> listUrl    = HashSet.newHashSet(10);;
-    private HashSet<String> listBadUrl = HashSet.newHashSet(10);;
+    private HashSet<String> listUrl    = HashSet.newHashSet(10);
+    private HashSet<String> listUrlUser= HashSet.newHashSet(10);
+    private HashSet<String> listBadUrl = HashSet.newHashSet(10);
     private HashMap<String, Integer> osMap = new HashMap<>();
     private HashMap<String, Integer> brMap = new HashMap<>();;
 
@@ -22,9 +25,12 @@ public class Statistics {
 
     public void clear() {
         this.totalTraffic = 0;
+        this.totalCall= 0;
+        this.totalBadCall = 0;
         this.minTime = null;
         this.maxTime = null;
         this.listUrl.clear(); //
+        this.listUrlUser.clear();
         this.osMap.clear();
         this.brMap.clear();
     }
@@ -37,7 +43,14 @@ public class Statistics {
         if (this.maxTime == null || entry.getDateAndTime().isAfter(this.maxTime)) {
             this.maxTime = entry.getDateAndTime();
         }
+        // статистика посещений пользователями
+        if (!entry.getUaTag().getBot()) {
+            this.totalCall++;
+            if (!listUrlUser.contains(entry.getIpAddr())) listUrlUser.add(entry.getIpAddr());
+        }
 
+        // статистика ошибочных обращений по коду ответа  4хх и 5хх
+        if (entry.getStatusCode()/100 ==4 || entry.getStatusCode()/100 ==5) this.totalBadCall ++;
         if (entry.getStatusCode()==200) listUrl.add(entry.getPath());
         if (entry.getStatusCode()==404) listBadUrl.add(entry.getPath());
         String os= entry.getUaTag().getOsName();        // Получаем имя операционной системы из тега User-Agent
@@ -81,6 +94,34 @@ public class Statistics {
         }
         return 0;
     }
+
+    public long getUserRate()  {
+        if (this.minTime != null && this.maxTime != null) {
+            long durationInHours = between(minTime, maxTime).toHours();
+            if (durationInHours > 0) {
+                return (long) (totalCall / durationInHours);
+            }
+        }
+        return 0;
+    }
+
+    public long getRatePerUser()  {
+        AtomicInteger allCount = new AtomicInteger();
+        listUrlUser.forEach((s) -> allCount.addAndGet(1));
+        return (long) (totalCall / allCount.get());
+    }
+
+    public long getBadRequestRate()  {
+        if (this.minTime != null && this.maxTime != null) {
+            long durationInHours = between(minTime, maxTime).toHours();
+            if (durationInHours > 0) {
+                return (long) (totalBadCall / durationInHours);
+            }
+        }
+        return 0;
+    }
+
+
 }
 
 /*
