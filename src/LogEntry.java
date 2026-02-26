@@ -12,7 +12,7 @@ public class LogEntry {
             .withLocale(java.util.Locale.ENGLISH);;
 
     private final String ipAddr;
-    private final String dateAndTime ;
+    private final LocalDateTime dateAndTime ;
     private final HttpMethod method ;
     private final String path ;
     private final int statusCode ;
@@ -57,7 +57,10 @@ public class LogEntry {
                 }
             }
             this.ipAddr = parts[0]+"."+parts[1]+"."+ parts[2]+"."+ parts[3];
-            this.dateAndTime = parts[4];
+
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(parts[4], formatter);
+            this.dateAndTime = offsetDateTime.toLocalDateTime();
+
             if (methodStr != null)
               try { methodTmp = HttpMethod.valueOf(methodStr); }
               catch (IllegalArgumentException e)  {methodTmp = HttpMethod.NONE;}
@@ -98,9 +101,7 @@ public class LogEntry {
     }
 
     public LocalDateTime getDateAndTime() {
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(this.dateAndTime, formatter);
-        return offsetDateTime.toLocalDateTime();
-        //return LocalDateTime.now();
+        return this.dateAndTime;
     }
 
     public HttpMethod getMethod() {
