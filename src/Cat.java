@@ -12,7 +12,6 @@ public class Cat {
         this.age = age;
         this.friendsName = friendsName;
     }
-
     @Override
     public String toString() {
         return "Cat{" +

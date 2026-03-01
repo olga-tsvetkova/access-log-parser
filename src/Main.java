@@ -12,6 +12,5 @@ public class Main {
 
      System.out.print("After: ");
      System.out.println(cat.toString());
-
  }
 }
